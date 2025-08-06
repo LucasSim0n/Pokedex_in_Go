@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/LucasSim0n/Pokedex_in_Go/internal"
 	"os"
 	"strings"
 )
@@ -10,9 +11,9 @@ import (
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
-	conf := &config{
-		next: 1,
-		prev: -19,
+	conf := &internal.Config{
+		Next: 1,
+		Prev: -19,
 	}
 
 	for {
@@ -21,14 +22,14 @@ func main() {
 		stripText := strings.TrimSpace(scanner.Text())
 		input := strings.Split(strings.ToLower(stripText), " ")[0]
 
-		com, ok := Commands[input]
+		com, ok := internal.Commands[input]
 		if !ok {
 			fmt.Println("Unknown command")
 			continue
 		}
-		err := com.callback(conf)
+		err := com.Callback(conf)
 		if err != nil {
-			fmt.Printf("Error occured with command %s: %v\n", com.name, err)
+			fmt.Printf("Error occured with command %s: %v\n", com.Name, err)
 		}
 	}
 }
