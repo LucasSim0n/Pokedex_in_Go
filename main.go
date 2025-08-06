@@ -10,20 +10,25 @@ import (
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
+	conf := &config{
+		next: 1,
+		prev: -19,
+	}
+
 	for {
 		fmt.Print("Pokedex >")
 		scanner.Scan()
 		stripText := strings.TrimSpace(scanner.Text())
 		input := strings.Split(strings.ToLower(stripText), " ")[0]
 
-		c, ok := Commands[input]
+		com, ok := Commands[input]
 		if !ok {
 			fmt.Println("Unknown command")
 			continue
 		}
-		err := c.callback()
+		err := com.callback(conf)
 		if err != nil {
-			fmt.Printf("Error occured with command %s: %v", c.name, err)
+			fmt.Printf("Error occured with command %s: %v\n", com.name, err)
 		}
 	}
 }
