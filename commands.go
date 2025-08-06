@@ -1,28 +1,25 @@
-package internal
+package main
 
 import (
 	"fmt"
 	"os"
-)
 
-type Config struct {
-	Next int
-	Prev int
-}
+	"github.com/LucasSim0n/Pokedex_in_Go/internal/pokeapi"
+)
 
 type cliCommand struct {
 	Name        string
 	Description string
-	Callback    func(c *Config) error
+	Callback    func(c *config) error
 }
 
-func commandExit(c *Config) error {
+func commandExit(c *config) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp(c *Config) error {
+func commandHelp(c *config) error {
 	fmt.Println("Welcome to the Pokedex!\nUsage:\n")
 	for _, c := range Commands {
 		fmt.Printf("%s: %s\n", c.Name, c.Description)
@@ -30,12 +27,12 @@ func commandHelp(c *Config) error {
 	return nil
 }
 
-func commandMap(c *Config) error {
+func commandMap(c *config) error {
 
-	for i := range 20 {
-		id := c.Next + i
+	for i := range pokeapi.NumLocations {
+		id := c.next + i
 
-		nLoc, err := GetLocation(id)
+		nLoc, err := c.apiClient.GetLocation(id)
 		if err != nil {
 			return err
 		}
@@ -43,29 +40,29 @@ func commandMap(c *Config) error {
 		fmt.Println(nLoc)
 
 	}
-	c.Next += 20
-	c.Prev += 20
+	c.next += pokeapi.NumLocations
+	c.prev += pokeapi.NumLocations
 	return nil
 }
 
-func commandMapB(c *Config) error {
+func commandMapB(c *config) error {
 
-	if c.Prev < 1 {
+	if c.prev < 1 {
 		return fmt.Errorf("you're on the first page")
 	}
 
-	for i := range 20 {
-		id := c.Prev + i
+	for i := range pokeapi.NumLocations {
+		id := c.prev + i
 
-		nLoc, err := GetLocation(id)
+		nLoc, err := c.apiClient.GetLocation(id)
 		if err != nil {
 			return err
 		}
 
 		fmt.Println(nLoc)
 	}
-	c.Prev -= 20
-	c.Next -= 20
+	c.prev -= pokeapi.NumLocations
+	c.next -= pokeapi.NumLocations
 
 	return nil
 }
