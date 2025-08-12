@@ -8,13 +8,15 @@ import (
 	"strconv"
 )
 
+const NumLocations int = 20
+
 type Location struct {
 	Name string `json:"name"`
 }
 
 func (c *Client) GetLocation(id int) (string, error) {
-	var data Location
-	fullURL := LocURL + strconv.Itoa(id)
+	var data LocResStruct
+	fullURL := baseURL + "location-area/" + strconv.Itoa(id)
 
 	if val, ok := c.cache.Get(fullURL); ok {
 		err := json.Unmarshal(val, &data)
