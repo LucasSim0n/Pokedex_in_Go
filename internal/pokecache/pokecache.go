@@ -86,3 +86,14 @@ func (c *Cache) reap(now time.Time, last time.Duration) {
 		}
 	}
 }
+
+func (c *Cache) GetAllPokemons() [][]byte {
+	var pokemons [][]byte
+
+	for _, val := range c.cache {
+		if val.capturedPokemon {
+			pokemons = append(pokemons, val.val)
+		}
+	}
+	return pokemons
+}

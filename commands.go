@@ -45,5 +45,10 @@ func init() {
 			Description: "Show data from the selected pokemon",
 			Callback:    commandInspect,
 		},
+		"list": {
+			Name:        "list",
+			Description: "Display all your captured pokemons",
+			Callback:    commandList,
+		},
 	}
 }
