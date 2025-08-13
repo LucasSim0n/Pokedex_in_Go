@@ -18,17 +18,22 @@ func startRepl(cfg *config) {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
-		fmt.Print("Pokedex >")
+		fmt.Print("Pokedex~> ")
 		scanner.Scan()
 		stripText := strings.TrimSpace(scanner.Text())
-		input := strings.Split(strings.ToLower(stripText), " ")[0]
+		input := strings.Split(strings.ToLower(stripText), " ")
+		userCom := input[0]
+		locName := ""
+		if len(input) > 1 {
+			locName = input[1]
+		}
 
-		com, ok := Commands[input]
+		com, ok := Commands[userCom]
 		if !ok {
 			fmt.Println("Unknown command")
 			continue
 		}
-		err := com.Callback(cfg)
+		err := com.Callback(cfg, locName)
 		if err != nil {
 			fmt.Printf("Error occured with command %s: %v\n", com.Name, err)
 		}

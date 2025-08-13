@@ -5,7 +5,7 @@ import (
 	"github.com/LucasSim0n/Pokedex_in_Go/internal/pokeapi"
 )
 
-func commandMap(c *config) error {
+func commandMap(c *config, name string) error {
 
 	for i := range pokeapi.NumLocations {
 		id := c.next + i
@@ -23,7 +23,7 @@ func commandMap(c *config) error {
 	return nil
 }
 
-func commandMapB(c *config) error {
+func commandMapB(c *config, name string) error {
 
 	if c.prev < 1 {
 		return fmt.Errorf("you're on the first page")

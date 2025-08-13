@@ -3,7 +3,7 @@ package main
 type cliCommand struct {
 	Name        string
 	Description string
-	Callback    func(c *config) error
+	Callback    func(c *config, name string) error
 }
 
 var Commands map[string]cliCommand
@@ -29,6 +29,11 @@ func init() {
 			Name:        "bmap",
 			Description: "Display the previous 20 locations",
 			Callback:    commandMapB,
+		},
+		"explore": {
+			Name:        "explore",
+			Description: "Display pokemons from the selected area",
+			Callback:    commandExplore,
 		},
 	}
 }

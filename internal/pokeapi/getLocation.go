@@ -10,10 +10,6 @@ import (
 
 const NumLocations int = 20
 
-type Location struct {
-	Name string `json:"name"`
-}
-
 func (c *Client) GetLocation(id int) (string, error) {
 	var data LocResStruct
 	fullURL := baseURL + "location-area/" + strconv.Itoa(id)
