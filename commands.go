@@ -35,5 +35,10 @@ func init() {
 			Description: "Display pokemons from the selected area",
 			Callback:    commandExplore,
 		},
+		"catch": {
+			Name:        "catch",
+			Description: "Try to catch the selected pokemon",
+			Callback:    commandCatch,
+		},
 	}
 }
