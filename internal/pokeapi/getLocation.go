@@ -37,6 +37,6 @@ func (c *Client) GetLocation(id int) (string, error) {
 		return "", fmt.Errorf("Error decoding json: %v", err)
 	}
 
-	c.cache.Add(fullURL, body)
+	c.cache.Add(fullURL, body, false)
 	return data.Name, nil
 }

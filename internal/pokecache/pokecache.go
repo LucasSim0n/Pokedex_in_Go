@@ -6,18 +6,19 @@ import (
 )
 
 type cacheEntry struct {
-	createdAt time.Time
-	val       []byte
+	createdAt       time.Time
+	val             []byte
+	capturedPokemon bool
 }
 
 type Cache struct {
-	cache map[string]cacheEntry
+	cache map[string]*cacheEntry
 	mux   *sync.Mutex
 }
 
 func NewCache(interval time.Duration) Cache {
 	c := Cache{
-		cache: make(map[string]cacheEntry),
+		cache: make(map[string]*cacheEntry),
 		mux:   &sync.Mutex{},
 	}
 
@@ -26,13 +27,14 @@ func NewCache(interval time.Duration) Cache {
 	return c
 }
 
-func (c *Cache) Add(key string, val []byte) {
+func (c *Cache) Add(key string, val []byte, capturedPokemon bool) {
 	c.mux.Lock()
 	defer c.mux.Unlock()
 
-	c.cache[key] = cacheEntry{
-		createdAt: time.Now(),
-		val:       val,
+	c.cache[key] = &cacheEntry{
+		createdAt:       time.Now(),
+		val:             val,
+		capturedPokemon: capturedPokemon,
 	}
 }
 
@@ -41,7 +43,29 @@ func (c *Cache) Get(key string) ([]byte, bool) {
 	defer c.mux.Unlock()
 
 	val, ok := c.cache[key]
+	if !ok {
+		var zero []byte
+		return zero, false
+	}
 	return val.val, ok
+}
+
+func (c *Cache) UpdateCP(key string) {
+	c.mux.Lock()
+	defer c.mux.Unlock()
+
+	val := c.cache[key]
+	val.capturedPokemon = true
+}
+
+func (c *Cache) GetCP(key string) bool {
+	c.mux.Lock()
+	defer c.mux.Unlock()
+	val, ok := c.cache[key]
+	if !ok {
+		return false
+	}
+	return val.capturedPokemon
 }
 
 func (c *Cache) reapLoop(interval time.Duration) {
@@ -57,7 +81,7 @@ func (c *Cache) reap(now time.Time, last time.Duration) {
 	defer c.mux.Unlock()
 
 	for k, v := range c.cache {
-		if v.createdAt.Before(now.Add(-last)) {
+		if v.createdAt.Before(now.Add(-last)) && !v.capturedPokemon {
 			delete(c.cache, k)
 		}
 	}

@@ -9,21 +9,22 @@ import (
 )
 
 func (c *Client) CatchPokemon(name string) (bool, error) {
-	xp, err := getPokemonXP(c, name)
+	fullURL := baseURL + "pokemon/" + name
+	xp, err := getPokemonXP(c, fullURL)
 	if err != nil {
 		return false, err
 	}
 
 	diff := GetDifficulty(xp)
 	if diff.Chance > rand.Intn(100) {
+		c.cache.UpdateCP(fullURL)
 		return true, nil
 	}
 
 	return false, nil
 }
 
-func getPokemonXP(c *Client, name string) (int, error) {
-	fullURL := baseURL + "pokemon/" + name
+func getPokemonXP(c *Client, fullURL string) (int, error) {
 	var pokemon PokemonResStruct
 
 	if data, ok := c.cache.Get(fullURL); ok {
@@ -48,7 +49,7 @@ func getPokemonXP(c *Client, name string) (int, error) {
 		return 0, fmt.Errorf("Error decoding json data: %v", err)
 	}
 
-	c.cache.Add(fullURL, data)
+	c.cache.Add(fullURL, data, false)
 
 	return pokemon.BaseExperience, nil
 

@@ -49,6 +49,6 @@ func getPokemons(c *Client, name string) (LocResStruct, error) {
 		return data, fmt.Errorf("Error decoding json: %v", err)
 	}
 
-	c.cache.Add(fullURL, body)
+	c.cache.Add(fullURL, body, false)
 	return data, nil
 }
